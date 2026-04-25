@@ -1,0 +1,56 @@
+{
+  "nazevFirmy": "KONRAD HOME BUILD, s.r.o.",
+  "nazevKratky": "Konrad Home Build",
+  "popis": "Stavíme moderní dřevostavby na klíč na jižní Moravě. Kvalitní rodinné domy s důrazem na ekologii a energetickou úspornost.",
+  "telefon": "+420 724 257 621",
+  "email": "konradbuild@email.cz",
+  "adresa": "Suchohrdly u Miroslavi 194, 671 72 Suchohrdly u Miroslavi",
+  "ico": "18013015",
+  "dic": "CZ18013015",
+  "web": "www.konradhomebuild.cz",
+  "pusobnost": "Moravský Krumlov a okolí 50 km",
+  "socialniSite": {
+    "facebook": "https://www.facebook.com/profile.php?id=61553308766659",
+    "instagram": "https://www.instagram.com/konrad_home_build/"
+  },
+  "zakladatel": {
+    "jmeno": "Lubomír Konrad",
+    "pozice": "Zakladatel a odborník v oboru stavitelství",
+    "citat": "S Konrad Home Build získáte nejen krásný domov, ale i jistotu kvalitní stavby. S našimi zkušenostmi a odborností jde všechno hladce.",
+    "fotografie": "/images/team/lubomir-konrad.jpg"
+  },
+  "sluzby": ["Dřevostavby na klíč"],
+  "usp": [
+    {
+      "titulek": "Profesionalita",
+      "popis": "Při volbě Konrad Home Build získáte profesionály v oboru stavby moderních rodinných domů."
+    },
+    {
+      "titulek": "Individuální péče",
+      "popis": "Nabízíme vám kvalitní služby, flexibilní přístup a individuální péči o každý projekt."
+    },
+    {
+      "titulek": "Kvalitní materiály",
+      "popis": "Zaměřujeme se na šetrnost k životnímu prostředí a používáme pouze ověřené a kvalitní materiály."
+    },
+    {
+      "titulek": "Splnitelné termíny",
+      "popis": "Naším cílem je poskytnout zákazníkům krásný a funkční dům v dohodnutém termínu."
+    }
+  ],
+  "reference": [
+    {
+      "jmeno": "Petr Opálka",
+      "text": "Dělali jsme si dřevostavbu na klíč s Lubošem Konrádem a nemohli být šťastnější. Jejich skvělý tým nám naslouchal, pochopil naše přání a s velkým nadšením nám postavil náš vysněný dům. Od začátku až do konce byla komunikace a profesionalita bezchybná."
+    },
+    {
+      "jmeno": "Oldřich Hrb",
+      "text": "Jsme nadšeni spoluprací při kompletní rekonstrukci našeho domu. Od samého začátku až do konce bylo naše zkušenost s touto stavební firmou naprosto pozitivní. Předvedli odbornost, profesionalitu a důraz na kvalitu v každém detailu projektu."
+    },
+    {
+      "jmeno": "Kamila Kolesová",
+      "text": "Spolupráce s Lubošem Konrad byla úžasná. Postavili nám dřevostavbu s použitím skvělých materiálů. Profesionální přístup a kvalitní práce nás nadchly. Doporučujeme je vřele!"
+    }
+  ],
+  "partneri": true
+}

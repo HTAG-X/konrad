@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+:root {
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-poppins: "Poppins", system-ui, sans-serif;
+  --gold-primary: #8B7340;
+  --gold-light: #B89B5E;
+  --cream-bg: #FFFFFF;
+  --cream-section: #F7F5F0;
+  --cream-accent: #F0EDE6;
+  --dark-text: #1A1A1A;
+  --body-text: #3D3D3D;
+  --text-muted: #8A8A8A;
+  --border-gold: rgba(139, 115, 64, 0.15);
+  --dark-footer: #1A1A1A;
+}
+
+@theme inline {
+  --color-background: var(--cream-bg);
+  --color-foreground: var(--body-text);
+  --color-gold: var(--gold-primary);
+  --color-gold-light: var(--gold-light);
+  --color-cream: var(--cream-section);
+  --color-cream-accent: var(--cream-accent);
+  --color-dark: var(--dark-text);
+  --color-muted: var(--text-muted);
+  --color-dark-footer: var(--dark-footer);
+  --font-sans: var(--font-poppins);
+  --font-serif: var(--font-montserrat);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--cream-bg);
+  color: var(--body-text);
+  font-family: var(--font-poppins);
+  line-height: 1.6;
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-montserrat);
+    font-weight: 700;
+    color: var(--dark-text);
+  }
+}
+
+/* Status Badges — outline style */
+.badge-free {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid #6BA73D;
+  color: #6BA73D;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.badge-reserved {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid #C9A96E;
+  color: #C9A96E;
+  background: rgba(255, 255, 255, 0.95);
+  opacity: 0.9;
+}
+
+.badge-booked {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid #D97706;
+  color: #D97706;
+  background: rgba(255, 255, 255, 0.95);
+  opacity: 0.85;
+}
+
+.badge-sold {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid #999;
+  color: #999;
+  background: rgba(255, 255, 255, 0.95);
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+/* Hero text shadow for readability on photos/videos */
+.hero-text {
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.7), 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.hero-text h1, .hero-text h2 {
+  font-weight: 800;
+}
+
+/* Fade-in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide-up animation for cookie banner */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}

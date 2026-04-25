@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konrad Home Build - Moderní dřevostavby na klíč</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold-primary: #8B7340;
+            --gold-light: #B89B5E;
+            --cream-bg: #FFFFFF;
+            --cream-section: #F7F5F0;
+            --cream-accent: #F0EDE6;
+            --dark-text: #1A1A1A;
+            --body-text: #3D3D3D;
+            --text-muted: #8A8A8A;
+            --border-gold: rgba(139, 115, 64, 0.15);
+            --dark-footer: #1A1A1A;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--body-text);
+            background-color: var(--cream-bg);
+            line-height: 1.6;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: transparent;
+            z-index: 1000;
+            padding: 1.5rem 2rem;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid var(--border-gold);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            letter-spacing: 0.3em;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gold-primary);
+        }
+
+        .nav {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--body-text);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: color 0.4s ease;
+            position: relative;
+        }
+
+        .nav a:hover {
+            color: var(--gold-primary);
+        }
+
+        .cta-button {
+            background: transparent;
+            color: var(--gold-primary);
+            padding: 0.8rem 1.8rem;
+            border: 1px solid var(--gold-primary);
+            border-radius: 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .cta-button:hover {
+            background: var(--gold-primary);
+            color: var(--cream-bg);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--dark-text);
+            border-radius: 1px;
+            transition: all 0.3s;
+        }
+
+        header.scrolled .hamburger span {
+            background: var(--body-text);
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        body {
+            padding-top: 0;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            padding: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .hero-label::before,
+        .hero-label::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--gold-light);
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            color: #FFFFFF;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 1.8vw, 1.15rem);
+            margin-bottom: 3rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn-gold {
+            background: var(--gold-light);
+            color: var(--dark-text);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-gold:hover {
+            background: #D4AE6A;
+            transform: translateY(-2px);
+        }
+
+        .btn-outlined {
+            background: transparent;
+            color: var(--gold-light);
+            padding: 1rem 2.5rem;
+            border: 1px solid var(--gold-light);
+            border-radius: 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-outlined:hover {
+            background: var(--gold-light);
+            color: var(--dark-text);
+        }
+
+        .hero-divider {
+            width: 60px;
+            height: 1px;
+            background: var(--gold-light);
+            margin: 0 auto 2rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: float 2s ease-in-out infinite;
+            color: var(--gold-light);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .chevron {
+            width: 20px;
+            height: 20px;
+            margin-top: 0.5rem;
+            border-left: 1px solid var(--gold-light);
+            border-bottom: 1px solid var(--gold-light);
+            transform: rotate(-45deg);
+            animation: chevronDown 1s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes chevronDown {
+            0% {
+                transform: rotate(-45deg) translateY(0);
+            }
+            50% {
+                transform: rotate(-45deg) translateY(5px);
+            }
+            100% {
+                transform: rotate(-45deg) translateY(0);
+            }
+        }
+
+        /* ===== USP SECTION ===== */
+        .usp {
+            background: var(--cream-section);
+            padding: 8rem 2rem;
+        }
+
+        .usp .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold-primary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 4rem;
+            color: var(--dark-text);
+            text-align: center;
+        }
+
+        .usp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0;
+        }
+
+        .usp-card {
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            background: var(--cream-bg);
+            border-top: 2px solid var(--gold-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+
+        .usp-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(139, 115, 64, 0.04);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .usp-card:hover::before {
+            opacity: 1;
+        }
+
+        .usp-card-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .usp-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .usp-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+            font-weight: 700;
+        }
+
+        .usp-card p {
+            color: var(--body-text);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ===== PROPERTIES SECTION ===== */
+        .properties {
+            background: var(--cream-bg);
+            padding: 8rem 2rem;
+        }
+
+        .properties .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .property-card {
+            background: var(--cream-bg);
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s ease;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .property-card:hover {
+            border-color: var(--gold-primary);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .property-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #8B7340 0%, #B89B5E 50%, #D4AE6A 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .property-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 0;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .badge-available {
+            border-color: #6BA73D;
+            color: #6BA73D;
+        }
+
+        .badge-reserved {
+            border-color: #C9A96E;
+            color: #C9A96E;
+            opacity: 0.8;
+        }
+
+        .badge-sold {
+            border-color: #999;
+            color: #999;
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .property-info {
+            padding: 2rem;
+        }
+
+        .property-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .property-location {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .property-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--gold-primary);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .property-specs {
+            display: flex;
+            gap: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-gold);
+            margin-top: 1.5rem;
+        }
+
+        .spec-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .spec-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--dark-text);
+            font-weight: 700;
+        }
+
+        .spec-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== PROCESS SECTION ===== */
+        .process {
+            background: var(--cream-section);
+            padding: 8rem 2rem;
+        }
+
+        .process .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            position: relative;
+        }
+
+        .process-item {
+            text-align: center;
+        }
+
+        .process-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            color: var(--gold-primary);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .process-item h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--dark-text);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .process-item p {
+            color: var(--body-text);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ===== QUOTE SECTION ===== */
+        .quote {
+            background: var(--cream-accent);
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .quote .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quote-ornament {
+            font-size: 2rem;
+            color: var(--gold-primary);
+            margin-bottom: 2rem;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: var(--dark-text);
+            font-weight: 400;
+            font-style: italic;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .quote-author {
+            color: var(--body-text);
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            background: linear-gradient(135deg, #8B7340 0%, #6B5A2E 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .cta-section .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: #FFFFFF;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        .cta-button-large {
+            background: #FFFFFF;
+            color: #8B7340;
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .cta-button-large:hover {
+            background: #F0EDE6;
+            transform: translateY(-2px);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--dark-footer);
+            color: #FFFFFF;
+            padding: 4rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(139, 115, 64, 0.2);
+        }
+
+        .footer-section h3 {
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            color: var(--gold-light);
+        }
+
+        .footer-section a {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            transition: color 0.4s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--gold-light);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+
+        /* ===== COOKIES ===== */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem 2rem;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cookie-banner.show {
+            display: block;
+        }
+
+        .cookie-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .cookie-text {
+            color: var(--body-text);
+            font-size: 0.85rem;
+            flex: 1;
+        }
+
+        .cookie-button {
+            background: var(--gold-primary);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .cookie-button:hover {
+            background: var(--gold-light);
+            transform: translateY(-1px);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .mobile-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                padding: 2rem;
+                display: none;
+                flex-direction: column;
+                gap: 1.5rem;
+                z-index: 999;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-nav.active {
+                display: flex;
+            }
+
+            .mobile-nav a {
+                color: var(--dark-text);
+                text-decoration: none;
+                font-size: 0.9rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                transition: color 0.4s ease;
+            }
+
+            .mobile-nav a:hover {
+                color: var(--gold-primary);
+            }
+
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-buttons button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .cookie-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .usp-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .usp-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header id="header">
+        <div class="header-container">
+            <div class="logo">KONRAD</div>
+            <nav class="nav">
+                <a href="#properties">Vlastnosti</a>
+                <a href="#process">Proces</a>
+                <a href="#contact">Kontakt</a>
+            </nav>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <button class="cta-button" onclick="document.getElementById('contact').scrollIntoView();">Konzultace</button>
+        </div>
+    </header>
+
+    <nav class="mobile-nav" id="mobileNav">
+        <a href="#properties">Vlastnosti</a>
+        <a href="#process">Proces</a>
+        <a href="#contact">Kontakt</a>
+        <button class="cta-button" onclick="document.getElementById('contact').scrollIntoView();">Konzultace</button>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-label">
+                <span>Luxusní dřevostavby</span>
+            </div>
+            <h1>Dům Vašich Snů</h1>
+            <p>Moderní dřevostavby kombinující eleganci, kvalitu a udržitelnost. Každý projekt je jedinečný a navržen s péčí o detaily.</p>
+            <div class="hero-buttons">
+                <button class="btn-gold">Prohlédnout Portfolio</button>
+                <button class="btn-outlined">Dozvědět se více</button>
+            </div>
+            <div class="hero-divider"></div>
+        </div>
+        <div class="scroll-indicator">
+            Rolujte dolů
+            <div class="chevron"></div>
+        </div>
+    </section>
+
+    <!-- USP SECTION -->
+    <section class="usp" id="usp">
+        <div class="container">
+            <div class="section-label">Naše Přednosti</div>
+            <h2 class="section-title">Proč si vybrat Konrad</h2>
+            <div class="usp-grid">
+                <div class="usp-card fade-in">
+                    <div class="usp-card-inner">
+                        <div class="usp-number">01</div>
+                        <h3>Kvalita bez kompromisů</h3>
+                        <p>Používáme pouze nejlepší materiály a nejmodernější technologie. Každá stavba je postavena s perfekcionistickou péčí.</p>
+                    </div>
+                </div>
+                <div class="usp-card fade-in">
+                    <div class="usp-card-inner">
+                        <div class="usp-number">02</div>
+                        <h3>Ekologické řešení</h3>
+                        <p>Dřevo je přírodní, obnovitelný materiál. Naše stavby jsou šetrné k životnímu prostředí a energeticky efektivní.</p>
+                    </div>
+                </div>
+                <div class="usp-card fade-in">
+                    <div class="usp-card-inner">
+                        <div class="usp-number">03</div>
+                        <h3>Individuální design</h3>
+                        <p>Každý projekt je přizpůsoben potřebám a představám klienta. Spolupracujeme s nejlepšími architekty.</p>
+                    </div>
+                </div>
+                <div class="usp-card fade-in">
+                    <div class="usp-card-inner">
+                        <div class="usp-number">04</div>
+                        <h3>Rychlá realizace</h3>
+                        <p>Modulární konstrukce umožňuje rychlejší stavbu. Od projektu k realizaci za měsíce, ne roky.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROPERTIES SECTION -->
+    <section class="properties" id="properties">
+        <div class="container">
+            <div class="section-label">Aktuální Nabídka</div>
+            <h2 class="section-title">Naše Projekty</h2>
+            <div class="property-grid">
+                <div class="property-card fade-in">
+                    <div class="property-image">
+                        <span class="property-badge badge-available">VOLNÉ</span>
+                    </div>
+                    <div class="property-info">
+                        <h3 class="property-title">Moderní vila na Moravě</h3>
+                        <p class="property-location">Olomoucký kraj</p>
+                        <div class="property-price">8 500 000 Kč</div>
+                        <div class="property-specs">
+                            <div class="spec-item">
+                                <div class="spec-value">250 m²</div>
+                                <div class="spec-label">Plocha</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-value">5</div>
+                                <div class="spec-label">Pokoje</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-value">2023</div>
+                                <div class="spec-label">Rok</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="property-card fade-in">
+                    <div class="property-image">
+                        <span class="property-badge badge-reserved">REZERVACE</span>
+                    </div>
+                    <div class="property-info">
+                        <h3 class="property-title">Skandinávský dům u moře</h3>
+                        <p class="property-location">Jihočeský kraj</p>
+                        <div class="property-price">12 300 000 Kč</div>
+                        <div class="property-specs">
+                            <div class="spec-item">
+                                <div class="spec-value">320 m²</div>
+                                <div class="spec-label">Plocha</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-value">6</div>
+                                <div class="spec-label">Pokoje</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-value">2024</div>
+                                <div class="spec-label">Rok</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="property-card fade-in">
+                    <div class="property-image">
+                        <span class="property-badge badge-sold">PRODÁNO</span>
+                    </div>
+                    <div class="property-info">
+                        <h3 class="property-title">Minimalistická usedlost</h3>
+                        <p class="property-location">Středočeský kraj</p>
+                        <div class="property-price">6 200 000 Kč</div>
+                        <div class="property-specs">
+                            <div class="spec-item">
+                                <div class="spec-value">180 m²</div>
+                                <div class="spec-label">Plocha</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-value">4</div>
+                                <div class="spec-label">Pokoje</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-value">2022</div>
+                                <div class="spec-label">Rok</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS SECTION -->
+    <section class="process" id="process">
+        <div class="container">
+            <div class="section-label">Naš Postup</div>
+            <h2 class="section-title">Cesta k Vašemu Domu</h2>
+            <div class="process-grid">
+                <div class="process-item fade-in">
+                    <div class="process-number">01</div>
+                    <h3>Konzultace</h3>
+                    <p>Nasloucháme Vašim přáním a představám. Probereme rozpočet, styl a funkčnost.</p>
+                </div>
+                <div class="process-item fade-in">
+                    <div class="process-number">02</div>
+                    <h3>Návrh</h3>
+                    <p>Naši architekti vytvoří jedinečný design přesně podle Vašich potřeb.</p>
+                </div>
+                <div class="process-item fade-in">
+                    <div class="process-number">03</div>
+                    <h3>Příprava</h3>
+                    <p>Zajistíme všechny doklady, povolení a příslušné certifikace.</p>
+                </div>
+                <div class="process-item fade-in">
+                    <div class="process-number">04</div>
+                    <h3>Stavba</h3>
+                    <p>Realizace stavby pod dohledem zkušených odborníků s využitím moderních technologií.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUOTE SECTION -->
+    <section class="quote">
+        <div class="container">
+            <div class="quote-ornament">"</div>
+            <p class="quote-text">Dům není jen stavba. Je to místo, kde se rodí vzpomínky a kde rostou rodiny.</p>
+            <p class="quote-author">Konrad Home Build</p>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <h2>Postavte si svůj vysněný dům</h2>
+            <p>Kontaktujte nás dnes a začněte svou cestu k dokonalému domovu. Naši experti se těší na spolupráci s vámi.</p>
+            <button class="cta-button-large">Objednat Konzultaci</button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>O nás</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; line-height: 1.6;">Jsme lídrem v oblasti moderních dřevostaveb v České republice. Podáváme zprávu o kvalitě, inovacích a ekologičnosti.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Odkazy</h3>
+                    <a href="#usp">Naše Přednosti</a>
+                    <a href="#properties">Projekty</a>
+                    <a href="#process">Proces</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Kontakt</h3>
+                    <a href="tel:+420123456789">+420 123 456 789</a>
+                    <a href="mailto:info@konrad.cz">info@konrad.cz</a>
+                    <a href="#">www.konrad.cz</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Konrad Home Build. Všechna práva vyhrazena.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- COOKIE BANNER -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p class="cookie-text">Používáme cookies pro zlepšení vašeho zážitku. Pokud budete pokračovat, souhlasíte s jejich použitím.</p>
+            <button class="cookie-button" onclick="acceptCookies()">Přijmout</button>
+        </div>
+    </div>
+
+    <script>
+        // Hamburger menu
+        const hamburger = document.getElementById('hamburger');
+        const mobileNav = document.getElementById('mobileNav');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+        });
+
+        // Close mobile menu when link is clicked
+        document.querySelectorAll('.mobile-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mobileNav.classList.remove('active');
+            });
+        });
+
+        // Header scroll effect
+        const header = document.getElementById('header');
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Cookie banner
+        function showCookieBanner() {
+            const cookieBanner = document.getElementById('cookieBanner');
+            const cookieConsent = localStorage.getItem('cookieConsent');
+
+            if (!cookieConsent) {
+                cookieBanner.classList.add('show');
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'true');
+            document.getElementById('cookieBanner').classList.remove('show');
+        }
+
+        // Show cookie banner on page load
+        window.addEventListener('load', showCookieBanner);
+    </script>
+</body>
+</html>
