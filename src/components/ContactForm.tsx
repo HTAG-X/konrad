@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { Send, CheckCircle } from "lucide-react";
+import Script from "next/script";
 
 interface ContactFormData {
   jmeno: string;
@@ -12,74 +13,100 @@ interface ContactFormData {
   adresa: string;
   predmet: string;
   zprava: string;
-  recaptcha: boolean;
+  souhlas: boolean;
   website: string;
-  captchaAnswer: string;
+}
+
+declare global {
+  interface Window {
+    grecaptcha: {
+      ready: (cb: () => void) => void;
+      execute: (siteKey: string, options: { action: string }) => Promise<string>;
+    };
+  }
 }
 
 interface ContactFormProps {
   projekt?: string;
 }
 
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
+
 export function ContactForm({ projekt }: ContactFormProps = {}) {
-  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<ContactFormData>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<ContactFormData>({
     defaultValues: {
       jmeno: "",
       prijmeni: "",
       email: "",
       telefon: "",
       adresa: "",
-      predmet: projekt ? "Mám zájem o dům z nabídky" : "Mám zájem o dům z nabídky",
+      predmet: "Mám zájem o dům z nabídky",
       zprava: projekt ? `Mám zájem o: ${projekt}` : "",
-      recaptcha: false,
+      souhlas: false,
       website: "",
-      captchaAnswer: "",
     },
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [submissionCount, setSubmissionCount] = useState(0);
   const [rateLimitError, setRateLimitError] = useState(false);
-  const [captcha, setCaptcha] = useState<{ num1: number; num2: number } | null>(null);
-
-  useEffect(() => {
-    const num1 = Math.floor(Math.random() * 10) + 1;
-    const num2 = Math.floor(Math.random() * 10) + 1;
-    setCaptcha({ num1, num2 });
-  }, []);
+  const [recaptchaError, setRecaptchaError] = useState(false);
 
   const onSubmit = async (data: ContactFormData) => {
-    if (data.website && data.website.trim()) {
-      console.warn("Honeypot triggered - bot detected");
-      return;
-    }
+    // Honeypot
+    if (data.website && data.website.trim()) return;
 
+    // Rate limit
     if (submissionCount >= 3) {
       setRateLimitError(true);
       return;
     }
 
-    if (captcha) {
-      const expectedAnswer = captcha.num1 + captcha.num2;
-      const userAnswer = parseInt(data.captchaAnswer, 10);
-      if (isNaN(userAnswer) || userAnswer !== expectedAnswer) {
+    setSubmitting(true);
+    setRecaptchaError(false);
+
+    try {
+      // Get reCAPTCHA token
+      const token = await new Promise<string>((resolve, reject) => {
+        if (!window.grecaptcha) {
+          reject(new Error("reCAPTCHA not loaded"));
+          return;
+        }
+        window.grecaptcha.ready(() => {
+          window.grecaptcha
+            .execute(RECAPTCHA_SITE_KEY, { action: "contact_form" })
+            .then(resolve)
+            .catch(reject);
+        });
+      });
+
+      // Verify on server
+      const verifyRes = await fetch("/api/recaptcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+
+      const verifyData = await verifyRes.json();
+
+      if (!verifyData.success) {
+        setRecaptchaError(true);
+        setSubmitting(false);
         return;
       }
+    } catch {
+      // If reCAPTCHA fails (e.g. blocked), allow submission anyway
+      console.warn("reCAPTCHA verification failed, proceeding anyway");
     }
 
+    // TODO: Send form data to email service (Resend/SendGrid)
     console.log("Form submitted:", data);
 
-    const newCount = submissionCount + 1;
-    setSubmissionCount(newCount);
-
+    setSubmissionCount((c) => c + 1);
     setSubmitted(true);
+    setSubmitting(false);
     reset();
-
-    if (captcha) {
-      const num1 = Math.floor(Math.random() * 10) + 1;
-      const num2 = Math.floor(Math.random() * 10) + 1;
-      setCaptcha({ num1, num2 });
-    }
 
     setTimeout(() => {
       setSubmitted(false);
@@ -105,10 +132,23 @@ export function ContactForm({ projekt }: ContactFormProps = {}) {
 
   return (
     <>
+      <Script
+        src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}
+        strategy="lazyOnload"
+      />
+
       {rateLimitError && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200">
           <p className="text-red-700 text-sm">
             Příliš mnoho pokusů. Zkuste to prosím později.
+          </p>
+        </div>
+      )}
+
+      {recaptchaError && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200">
+          <p className="text-red-700 text-sm">
+            Ověření proti spamu selhalo. Zkuste to prosím znovu.
           </p>
         </div>
       )}
@@ -253,43 +293,16 @@ export function ContactForm({ projekt }: ContactFormProps = {}) {
           />
         </div>
 
-        {/* Math CAPTCHA */}
-        {captcha && (
-          <div>
-            <label htmlFor="captchaAnswer" className="block text-[0.8rem] font-semibold text-[#3D3D3D] mb-2 tracking-[0.05em] uppercase">
-              Bezpečnostní ověření: Kolik je {captcha.num1} + {captcha.num2}?
-            </label>
-            <input
-              {...register("captchaAnswer", {
-                required: "Odpověď je povinná",
-                validate: (value) => {
-                  const answer = parseInt(value, 10);
-                  const expected = captcha.num1 + captcha.num2;
-                  return answer === expected || "Nesprávná odpověď. Zkuste to prosím znovu.";
-                },
-              })}
-              type="text"
-              id="captchaAnswer"
-              inputMode="numeric"
-              className={inputClass(!!errors.captchaAnswer)}
-              placeholder="Vaše odpověď"
-            />
-            {errors.captchaAnswer && (
-              <p className="text-red-500 text-sm mt-1">{errors.captchaAnswer.message}</p>
-            )}
-          </div>
-        )}
-
         {/* GDPR souhlas */}
         <div className="flex items-start gap-3 p-4 border border-[rgba(139,115,64,0.2)] bg-[#F7F5F0]">
           <input
-            {...register("recaptcha", { required: "Musíte potvrdit souhlas" })}
+            {...register("souhlas", { required: "Musíte potvrdit souhlas" })}
             type="checkbox"
-            id="recaptcha"
+            id="souhlas"
             className="w-5 h-5 mt-0.5 accent-[#8B7340]"
           />
           <div>
-            <label htmlFor="recaptcha" className="text-sm font-medium text-[#3D3D3D]">
+            <label htmlFor="souhlas" className="text-sm font-medium text-[#3D3D3D]">
               Souhlas se zpracováním údajů
             </label>
             <p className="text-xs text-[#8A8A8A] mt-1">
@@ -297,21 +310,22 @@ export function ContactForm({ projekt }: ContactFormProps = {}) {
             </p>
           </div>
         </div>
-        {errors.recaptcha && (
-          <p className="text-red-500 text-sm mt-1">{errors.recaptcha.message}</p>
+        {errors.souhlas && (
+          <p className="text-red-500 text-sm mt-1">{errors.souhlas.message}</p>
         )}
 
         {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-[#8B7340] text-white py-4 font-semibold text-[0.85rem] tracking-[0.1em] uppercase transition-all duration-400 hover:bg-[#B89B5E] flex items-center justify-center gap-3"
+          disabled={submitting}
+          className="w-full bg-[#8B7340] text-white py-4 font-semibold text-[0.85rem] tracking-[0.1em] uppercase transition-all duration-400 hover:bg-[#B89B5E] flex items-center justify-center gap-3 disabled:opacity-50"
         >
           <Send size={18} />
-          Odeslat poptávku
+          {submitting ? "Odesílám..." : "Odeslat poptávku"}
         </button>
 
         <p className="text-xs text-[#8A8A8A] text-center">
-          Odpovíme vám do 24 hodin
+          Odpovíme vám do 24 hodin. Tento formulář je chráněn službou reCAPTCHA od Google.
         </p>
       </form>
     </>
