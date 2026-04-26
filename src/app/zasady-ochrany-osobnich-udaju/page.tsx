@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import siteConfig from "@/data/siteConfig.json";
+import { getSiteConfig } from "@/lib/supabase/queries";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Zásady ochrany osobních údajů | Konrad Home Build",
@@ -9,7 +11,9 @@ export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const siteConfig = await getSiteConfig();
+
   const sectionClass = "mb-16 scroll-mt-24";
   const headingClass = "font-serif text-2xl font-bold text-[#1A1A1A] mb-6";
   const cardClass = "bg-white p-8 border-t border-[rgba(139,115,64,0.15)]";
@@ -63,11 +67,11 @@ export default function PrivacyPolicyPage() {
           <h2 className={headingClass}>1. Úvodní ustanovení</h2>
           <div className={cardClass}>
             <p className={`${textClass} mb-6`}>
-              Správcem vašich osobních údajů je společnost <strong>{siteConfig.nazevFirmy}</strong>,
+              Správcem vašich osobních údajů je společnost <strong>{siteConfig.nazev_firmy}</strong>,
               která je zodpovědná za jejich zpracování v souladu s požadavky GDPR.
             </p>
             <div className="bg-[#F7F5F0] p-6 mb-6 text-[#1A1A1A]">
-              <p className="font-bold mb-2">{siteConfig.nazevFirmy}</p>
+              <p className="font-bold mb-2">{siteConfig.nazev_firmy}</p>
               <p className="mb-1">IČ: {siteConfig.ico}</p>
               <p className="mb-1">DIČ: {siteConfig.dic}</p>
               <p className="mb-1">Adresa: {siteConfig.adresa}</p>
@@ -267,7 +271,7 @@ export default function PrivacyPolicyPage() {
               Máte-li jakékoliv dotazy týkající se ochrany vašich osobních údajů:
             </p>
             <div className="bg-[#F7F5F0] p-6 text-[#1A1A1A]">
-              <p className="font-bold mb-2">{siteConfig.nazevFirmy}</p>
+              <p className="font-bold mb-2">{siteConfig.nazev_firmy}</p>
               <p className="mb-1">{siteConfig.adresa}</p>
               <p className="mb-1">
                 Tel: <a href={`tel:${siteConfig.telefon}`} className={linkClass}>{siteConfig.telefon}</a>

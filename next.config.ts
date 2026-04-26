@@ -17,7 +17,6 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  output: "export",
   async headers() {
     return [
       {

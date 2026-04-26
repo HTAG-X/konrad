@@ -3,27 +3,37 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapPin, Home, Ruler, Zap, Phone, Mail, ArrowLeft, Check } from "lucide-react";
 import { ProjectGallery } from "@/components/ProjectGallery";
-import projekty from "@/data/projekty.json";
+import { getProjektBySlug } from "@/lib/supabase/queries";
+import { getStaticProjektySlugs, getStaticProjektBySlug } from "@/lib/supabase/static";
 import { formatPrice } from "@/lib/utils";
 import { PropertyJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
+import { PudorysPreview } from "@/components/PudorysPreview";
+
+export const revalidate = 60;
 
 interface ProjektyDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return projekty.map((projekt) => ({ slug: projekt.slug }));
+  const slugs = await getStaticProjektySlugs();
+  return slugs.map((p: any) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata(props: ProjektyDetailPageProps): Promise<Metadata> {
   const params = await props.params;
-  const projekt = projekty.find((p) => p.slug === params.slug);
+  let projekt;
+  try {
+    projekt = await getStaticProjektBySlug(params.slug);
+  } catch {
+    return { title: "Projekt nenalezen" };
+  }
   if (!projekt) return { title: "Projekt nenalezen" };
 
   return {
     title: `${projekt.nazev} | Konrad Home Build`,
     description: projekt.popis,
-    keywords: `${projekt.nazev}, ${projekt.lokalita}, dům, dřevostavba, ${projekt.dispozice}, ${projekt.energetickaTrida}`,
+    keywords: `${projekt.nazev}, ${projekt.lokalita}, dům, dřevostavba, ${projekt.dispozice}, ${projekt.energeticka_trida}`,
     openGraph: {
       title: projekt.nazev,
       description: projekt.popis,
@@ -36,7 +46,12 @@ export async function generateMetadata(props: ProjektyDetailPageProps): Promise<
 
 export default async function ProjektyDetailPage(props: ProjektyDetailPageProps) {
   const params = await props.params;
-  const projekt = projekty.find((p) => p.slug === params.slug);
+  let projekt;
+  try {
+    projekt = await getProjektBySlug(params.slug);
+  } catch {
+    notFound();
+  }
   if (!projekt) notFound();
 
   const breadcrumbItems = [
@@ -59,7 +74,7 @@ export default async function ProjektyDetailPage(props: ProjektyDetailPageProps)
         addressCity="Suchohrdly u Miroslavi"
         addressPostalCode="671 72"
         addressCountry="CZ"
-        floorSize={projekt.uzitnaPlocha}
+        floorSize={projekt.uzitna_plocha}
       />
 
       {/* Breadcrumb */}
@@ -105,7 +120,7 @@ export default async function ProjektyDetailPage(props: ProjektyDetailPageProps)
       <div className="max-w-[1400px] mx-auto px-8 mb-12">
         <ProjectGallery
           nazev={projekt.nazev}
-          hlavniFoto={projekt.hlavniFoto}
+          hlavniFoto={projekt.hlavni_foto}
           fotogalerie={projekt.fotogalerie}
           pudorys={projekt.pudorys}
         />
@@ -122,8 +137,8 @@ export default async function ProjektyDetailPage(props: ProjektyDetailPageProps)
               <p className="font-serif text-[3rem] font-bold text-[#8B7340]">
                 {formatPrice(projekt.cena)}
               </p>
-              {projekt.poznamkaCena && (
-                <p className="text-[0.85rem] text-[#8A8A8A] mt-2">{projekt.poznamkaCena}</p>
+              {projekt.poznamka_cena && (
+                <p className="text-[0.85rem] text-[#8A8A8A] mt-2">{projekt.poznamka_cena}</p>
               )}
             </div>
 
@@ -141,7 +156,7 @@ export default async function ProjektyDetailPage(props: ProjektyDetailPageProps)
                   <Ruler size={18} className="text-[#8B7340]" />
                   <p className="text-[0.8rem] text-[#8A8A8A] uppercase tracking-[0.05em]">Užitná plocha</p>
                 </div>
-                <p className="font-serif text-2xl font-bold text-[#1A1A1A]">{projekt.uzitnaPlocha} m²</p>
+                <p className="font-serif text-2xl font-bold text-[#1A1A1A]">{projekt.uzitna_plocha} m²</p>
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -155,21 +170,24 @@ export default async function ProjektyDetailPage(props: ProjektyDetailPageProps)
                   <Zap size={18} className="text-[#8B7340]" />
                   <p className="text-[0.8rem] text-[#8A8A8A] uppercase tracking-[0.05em]">Energ. třída</p>
                 </div>
-                <p className="font-serif text-2xl font-bold text-[#1A1A1A]">{projekt.energetickaTrida}</p>
+                <p className="font-serif text-2xl font-bold text-[#1A1A1A]">{projekt.energeticka_trida}</p>
               </div>
             </div>
 
             {/* Description */}
             <div className="mb-12">
               <h2 className="font-serif text-2xl font-bold text-[#1A1A1A] mb-4">O projektu</h2>
-              <p className="text-[#3D3D3D] leading-relaxed">{projekt.popis}</p>
+              <div
+                className="text-[#3D3D3D] leading-[1.8] text-[1.05rem] [&_p]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mt-4 [&_h3]:mb-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_li]:mb-1 [&_blockquote]:border-l-2 [&_blockquote]:border-[#8B7340] [&_blockquote]:pl-4 [&_blockquote]:italic [&_a]:text-[#8B7340] [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: projekt.popis || "" }}
+              />
             </div>
 
             {/* Features */}
             <div>
               <h2 className="font-serif text-2xl font-bold text-[#1A1A1A] mb-6">Vybavení a vlastnosti</h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {projekt.vybava.map((feature, index) => (
+                {projekt.vybava.map((feature: string, index: number) => (
                   <li key={index} className="flex items-start gap-3">
                     <Check size={18} className="text-[#6BA73D] flex-shrink-0 mt-0.5" />
                     <span className="text-[#3D3D3D]">{feature}</span>
@@ -181,27 +199,32 @@ export default async function ProjektyDetailPage(props: ProjektyDetailPageProps)
 
           {/* Right Column — Sidebar */}
           <div className="lg:col-span-1">
+            {/* Půdorys */}
+            {projekt.pudorys && (
+              <PudorysPreview src={projekt.pudorys} nazev={projekt.nazev} />
+            )}
+
             {/* Broker Contact */}
             <div className="bg-[#1A1A1A] text-white p-6 mb-6">
               <h3 className="font-semibold mb-4 text-lg text-[#B89B5E]">Kontaktní osoba</h3>
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-white/60 mb-1">Jméno</p>
-                  <p className="font-semibold text-lg">{projekt.maklerka.jmeno}</p>
+                  <p className="font-semibold text-lg">{projekt.maklerka_jmeno}</p>
                 </div>
                 <a
-                  href={`tel:${projekt.maklerka.telefon}`}
+                  href={`tel:${projekt.maklerka_telefon}`}
                   className="flex items-center gap-2 text-white/80 hover:text-[#B89B5E] transition-colors"
                 >
                   <Phone size={18} />
-                  <span className="font-medium">{projekt.maklerka.telefon}</span>
+                  <span className="font-medium">{projekt.maklerka_telefon}</span>
                 </a>
                 <a
-                  href={`mailto:${projekt.maklerka.email}`}
+                  href={`mailto:${projekt.maklerka_email}`}
                   className="flex items-center gap-2 text-white/80 hover:text-[#B89B5E] transition-colors text-sm break-all"
                 >
                   <Mail size={18} />
-                  <span className="font-medium">{projekt.maklerka.email}</span>
+                  <span className="font-medium">{projekt.maklerka_email}</span>
                 </a>
               </div>
             </div>

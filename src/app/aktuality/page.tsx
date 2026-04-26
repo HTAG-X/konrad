@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar } from "lucide-react";
-import blogPosts from "@/data/blogPosts.json";
+import { getPublishedBlogPosts } from "@/lib/supabase/queries";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Aktuality a novinky | Konrad Home Build",
@@ -24,10 +26,8 @@ function formatCzechDate(dateString: string): string {
   }).format(date);
 }
 
-export default function AktualityPage() {
-  const sortedPosts = [...blogPosts].sort(
-    (a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime()
-  );
+export default async function AktualityPage() {
+  const sortedPosts = await getPublishedBlogPosts();
 
   return (
     <div>
@@ -49,7 +49,7 @@ export default function AktualityPage() {
       {/* Blog Grid */}
       <section className="max-w-[1400px] mx-auto px-8 py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {sortedPosts.map((post) => (
+          {sortedPosts.map((post: any) => (
             <Link key={post.id} href={`/aktuality/${post.slug}`}>
               <article className="group bg-white border border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.08)] overflow-hidden transition-all duration-500 hover:border-[#8B7340] hover:-translate-y-2 hover:shadow-[0_12px_24px_rgba(0,0,0,0.12)] h-full flex flex-col">
                 {/* Image placeholder */}
@@ -69,7 +69,7 @@ export default function AktualityPage() {
                   </h3>
 
                   <p className="text-[#3D3D3D] text-[0.95rem] line-clamp-3 mb-6 flex-1 leading-relaxed">
-                    {post.kratkyPopis}
+                    {post.kratky_popis}
                   </p>
 
                   <span className="text-[#8B7340] font-semibold text-[0.8rem] tracking-[0.1em] uppercase">

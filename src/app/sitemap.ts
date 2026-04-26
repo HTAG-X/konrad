@@ -1,8 +1,7 @@
 import { MetadataRoute } from "next";
-import projekty from "@/data/projekty.json";
-import blogPosts from "@/data/blogPosts.json";
+import { getProjekty, getPublishedBlogPosts } from "@/lib/supabase/queries";
 
-export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://www.konradhomebuild.cz";
@@ -53,8 +52,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  const [projekty, blogPosts] = await Promise.all([
+    getProjekty(),
+    getPublishedBlogPosts(),
+  ]);
+
   // Dynamic project pages
-  const projektPages: MetadataRoute.Sitemap = projekty.map((projekt) => ({
+  const projektPages: MetadataRoute.Sitemap = projekty.map((projekt: any) => ({
     url: `${baseUrl}/projekty/${projekt.slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
@@ -62,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Dynamic blog post pages
-  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post: any) => ({
     url: `${baseUrl}/aktuality/${post.slug}`,
     lastModified: new Date(post.datum),
     changeFrequency: "weekly" as const,

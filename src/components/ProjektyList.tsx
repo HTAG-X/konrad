@@ -11,10 +11,10 @@ interface Projekt {
   lokalita: string;
   cena: number;
   dispozice: string;
-  uzitnaPlocha: number;
+  uzitna_plocha: number;
   pozemek: number;
   stav: "Volné" | "Rezervace" | "Zamluveno" | "Prodáno";
-  hlavniFoto: string;
+  hlavni_foto: string;
 }
 
 interface ProjektyListProps {
@@ -56,7 +56,7 @@ export default function ProjektyList({ projekty }: ProjektyListProps) {
               {/* Image */}
               <div className="relative h-[300px] bg-[#F7F5F0] overflow-hidden">
                 <img
-                  src={projekt.hlavniFoto}
+                  src={projekt.hlavni_foto}
                   alt={projekt.nazev}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -101,7 +101,7 @@ export default function ProjektyList({ projekty }: ProjektyListProps) {
                   </div>
                   <div className="flex-1 text-center">
                     <div className="font-serif text-[1.1rem] font-bold text-[#1A1A1A]">
-                      {projekt.uzitnaPlocha} m²
+                      {projekt.uzitna_plocha} m²
                     </div>
                     <div className="text-[0.7rem] text-[#8A8A8A] uppercase tracking-[0.1em] mt-1">
                       Užitná plocha

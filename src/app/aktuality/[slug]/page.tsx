@@ -2,29 +2,38 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Calendar, User, ArrowLeft, Grid3X3 } from "lucide-react";
-import blogPosts from "@/data/blogPosts.json";
+import { getPublishedBlogPosts, getBlogPostBySlug } from "@/lib/supabase/queries";
+import { getStaticBlogSlugs, getStaticBlogPostBySlug } from "@/lib/supabase/static";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
+
+export const revalidate = 60;
 
 interface BlogDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+  const slugs = await getStaticBlogSlugs();
+  return slugs.map((p: any) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata(props: BlogDetailPageProps): Promise<Metadata> {
   const params = await props.params;
-  const post = blogPosts.find((p) => p.slug === params.slug);
+  let post;
+  try {
+    post = await getStaticBlogPostBySlug(params.slug);
+  } catch {
+    return { title: "Článek nenalezen" };
+  }
   if (!post) return { title: "Článek nenalezen" };
 
   return {
     title: `${post.titulek} | Konrad Home Build`,
-    description: post.kratkyPopis,
+    description: post.kratky_popis,
     keywords: `${post.titulek}, aktuality, dřevostavby, blog`,
     openGraph: {
       title: post.titulek,
-      description: post.kratkyPopis,
+      description: post.kratky_popis,
       type: "article",
       url: `https://www.konradhomebuild.cz/aktuality/${post.slug}`,
       publishedTime: post.datum,
@@ -44,12 +53,17 @@ function formatCzechDate(dateString: string): string {
 
 export default async function BlogDetailPage(props: BlogDetailPageProps) {
   const params = await props.params;
-  const post = blogPosts.find((p) => p.slug === params.slug);
+  let post;
+  try {
+    post = await getBlogPostBySlug(params.slug);
+  } catch {
+    notFound();
+  }
   if (!post) notFound();
 
-  const otherPosts = blogPosts
-    .filter((p) => p.slug !== params.slug)
-    .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime())
+  const allPosts = await getPublishedBlogPosts();
+  const otherPosts = allPosts
+    .filter((p: any) => p.slug !== params.slug)
     .slice(0, 3);
 
   const breadcrumbItems = [
@@ -63,11 +77,11 @@ export default async function BlogDetailPage(props: BlogDetailPageProps) {
       <BreadcrumbJsonLd items={breadcrumbItems} />
       <ArticleJsonLd
         headline={post.titulek}
-        description={post.kratkyPopis}
+        description={post.kratky_popis}
         author={post.autor}
         datePublished={post.datum}
         url={`https://www.konradhomebuild.cz/aktuality/${post.slug}`}
-        image={post.nahledovyObrazek}
+        image={post.nahledovy_obrazek}
       />
 
       {/* Breadcrumb */}
@@ -134,7 +148,7 @@ export default async function BlogDetailPage(props: BlogDetailPageProps) {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {otherPosts.map((relatedPost) => (
+              {otherPosts.map((relatedPost: any) => (
                 <Link key={relatedPost.id} href={`/aktuality/${relatedPost.slug}`}>
                   <article className="group bg-white border border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.08)] overflow-hidden transition-all duration-500 hover:border-[#8B7340] hover:-translate-y-2 h-full flex flex-col">
                     <div className="h-[200px] bg-gradient-to-br from-[#8B7340] via-[#B89B5E] to-[#D4AE6A]" />
@@ -147,7 +161,7 @@ export default async function BlogDetailPage(props: BlogDetailPageProps) {
                         {relatedPost.titulek}
                       </h3>
                       <p className="text-[#3D3D3D] text-[0.9rem] line-clamp-3 flex-1">
-                        {relatedPost.kratkyPopis}
+                        {relatedPost.kratky_popis}
                       </p>
                       <span className="mt-4 text-[#8B7340] font-semibold text-[0.8rem] tracking-[0.1em] uppercase">
                         Číst více &rarr;

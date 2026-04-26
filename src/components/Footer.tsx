@@ -18,7 +18,16 @@ function InstagramIcon({ className = "" }: { className?: string }) {
     </svg>
   );
 }
-import siteConfig from "@/data/siteConfig.json";
+
+interface SiteConfig {
+  adresa: string;
+  ico: string;
+  dic: string;
+  telefon: string;
+  email: string;
+  facebook_url: string;
+  instagram_url: string;
+}
 
 const footerLinks = [
   { href: "/projekty", label: "Projekty" },
@@ -28,13 +37,11 @@ const footerLinks = [
   { href: "/kontakt", label: "Kontakt" },
 ];
 
-export function Footer() {
+export function Footer({ siteConfig }: { siteConfig: SiteConfig }) {
   return (
     <footer className="bg-[#1A1A1A] text-white pt-16 pb-8">
       <div className="max-w-[1400px] mx-auto px-8">
-        {/* Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 pb-12 border-b border-[rgba(139,115,64,0.2)]">
-          {/* O nás */}
           <div>
             <h3 className="text-[0.9rem] tracking-[0.15em] uppercase mb-6 text-[#B89B5E] font-sans font-semibold">
               O nás
@@ -53,12 +60,11 @@ export function Footer() {
             </a>
             <div className="mt-4 space-y-1 text-white/50 text-[0.85rem]">
               <p>{siteConfig.adresa}</p>
-              <p>IČO: {siteConfig.ico}</p>
+              <p>IČ: {siteConfig.ico}</p>
               <p>DIČ: {siteConfig.dic}</p>
             </div>
           </div>
 
-          {/* Odkazy */}
           <div>
             <h3 className="text-[0.9rem] tracking-[0.15em] uppercase mb-6 text-[#B89B5E] font-sans font-semibold">
               Odkazy
@@ -76,7 +82,6 @@ export function Footer() {
             </nav>
           </div>
 
-          {/* Kontakt */}
           <div>
             <h3 className="text-[0.9rem] tracking-[0.15em] uppercase mb-6 text-[#B89B5E] font-sans font-semibold">
               Kontakt
@@ -98,10 +103,9 @@ export function Footer() {
               </a>
             </div>
 
-            {/* Social Media */}
             <div className="flex gap-4">
               <a
-                href={siteConfig.socialniSite.facebook}
+                href={siteConfig.facebook_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/70 hover:text-[#B89B5E] transition-colors duration-400"
@@ -110,7 +114,7 @@ export function Footer() {
                 <FacebookIcon className="w-5 h-5" />
               </a>
               <a
-                href={siteConfig.socialniSite.instagram}
+                href={siteConfig.instagram_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/70 hover:text-[#B89B5E] transition-colors duration-400"
@@ -122,7 +126,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Footer Bottom */}
         <div className="text-center text-white/60 text-[0.85rem] flex flex-col sm:flex-row justify-between items-center gap-3">
           <p>&copy; 2026 Konrad Home Build. Všechna práva vyhrazena.</p>
           <Link

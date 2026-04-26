@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Poppins } from "next/font/google";
+import { headers } from "next/headers";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
+import { getSiteConfig } from "@/lib/supabase/queries";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -46,21 +48,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+  const isAdmin = pathname.startsWith("/admin");
+
+  const siteConfig = isAdmin ? null : await getSiteConfig();
+
   return (
     <html
       lang="cs"
       className={`${montserrat.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
-        <CookieConsent />
+      <body className={isAdmin ? "min-h-full font-sans" : "min-h-full flex flex-col font-sans"}>
+        {!isAdmin && <Header />}
+        {isAdmin ? children : <main className="flex-grow">{children}</main>}
+        {!isAdmin && siteConfig && <Footer siteConfig={siteConfig} />}
+        {!isAdmin && <CookieConsent />}
       </body>
     </html>
   );

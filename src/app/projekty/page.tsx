@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
-import projekty from "@/data/projekty.json";
+import { getProjekty } from "@/lib/supabase/queries";
 import ProjektyList from "@/components/ProjektyList";
 
-interface Projekt {
-  id: number;
-  slug: string;
-  nazev: string;
-  lokalita: string;
-  cena: number;
-  dispozice: string;
-  uzitnaPlocha: number;
-  pozemek: number;
-  stav: "Volné" | "Rezervace" | "Zamluveno" | "Prodáno";
-  hlavniFoto: string;
-}
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Naše projekty | Konrad Home Build",
@@ -28,7 +17,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProjektyPage() {
+export default async function ProjektyPage() {
+  const projekty = await getProjekty();
+
   return (
     <div className="bg-white">
       {/* Hero */}
@@ -49,7 +40,7 @@ export default function ProjektyPage() {
 
       {/* Content */}
       <section className="max-w-[1400px] mx-auto px-8 py-24">
-        <ProjektyList projekty={projekty as Projekt[]} />
+        <ProjektyList projekty={projekty as any[]} />
       </section>
     </div>
   );

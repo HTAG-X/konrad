@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import projekty from "@/data/projekty.json";
-import siteConfig from "@/data/siteConfig.json";
 import { formatPrice } from "@/lib/utils";
 
 const GOOGLE_REVIEW_URL =
@@ -30,9 +28,16 @@ function GoogleStars({ className = "" }: { className?: string }) {
   );
 }
 
-export default function HomePage() {
+interface HomePageProps {
+  projekty: any[];
+  siteConfig: any;
+  usp: any[];
+  reference: any[];
+}
+
+export default function HomePage({ projekty, siteConfig, usp, reference }: HomePageProps) {
   const featuredProperties = projekty.filter(
-    (p) => p.stav === "Volné" || p.stav === "Rezervace"
+    (p: any) => p.stav === "Volné" || p.stav === "Rezervace"
   );
 
   return (
@@ -127,9 +132,9 @@ export default function HomePage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
-            {siteConfig.usp.map((usp, index) => (
+            {usp.map((u: any, index: number) => (
               <div
-                key={usp.titulek}
+                key={u.titulek}
                 className="bg-white border-t-2 border-[#8B7340] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-10 mb-8 lg:mb-0 relative overflow-hidden group transition-all duration-500"
               >
                 <div className="absolute inset-0 bg-[rgba(139,115,64,0.04)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -138,10 +143,10 @@ export default function HomePage() {
                     {String(index + 1).padStart(2, "0")}
                   </div>
                   <h3 className="font-serif text-[1.3rem] font-bold text-[#1A1A1A] mb-4">
-                    {usp.titulek}
+                    {u.titulek}
                   </h3>
                   <p className="text-[#3D3D3D] text-[0.95rem] leading-relaxed">
-                    {usp.popis}
+                    {u.popis}
                   </p>
                 </div>
               </div>
@@ -169,7 +174,7 @@ export default function HomePage() {
               >
                 <div className="w-full h-[400px] bg-[#F7F5F0] relative overflow-hidden">
                   <img
-                    src={property.hlavniFoto}
+                    src={property.hlavni_foto}
                     alt={property.nazev}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
@@ -202,7 +207,7 @@ export default function HomePage() {
                   <div className="flex gap-8 pt-6 border-t border-[rgba(139,115,64,0.15)]">
                     <div className="flex-1 text-center">
                       <div className="font-serif text-[1.3rem] font-bold text-[#1A1A1A]">
-                        {property.uzitnaPlocha} m²
+                        {property.uzitna_plocha} m²
                       </div>
                       <div className="text-[0.75rem] text-[#8A8A8A] uppercase tracking-[0.1em] mt-2">
                         Plocha
@@ -288,7 +293,7 @@ export default function HomePage() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {siteConfig.reference.map((ref) => (
+            {reference.map((ref: any) => (
               <div
                 key={ref.jmeno}
                 className="bg-[#F7F5F0] p-10 border-t-2 border-[#8B7340] relative flex flex-col"
@@ -350,10 +355,10 @@ export default function HomePage() {
         <div className="max-w-[900px] mx-auto">
           <div className="text-[2rem] text-[#8B7340] mb-8">&ldquo;</div>
           <p className="font-serif font-normal italic text-[#1A1A1A] mb-8 leading-relaxed text-[clamp(1.5rem,4vw,2.5rem)]">
-            {siteConfig.zakladatel.citat}
+            {siteConfig.zakladatel_citat}
           </p>
           <p className="text-[#3D3D3D] text-[0.9rem] tracking-[0.15em] uppercase">
-            {siteConfig.zakladatel.jmeno}, {siteConfig.zakladatel.pozice.toLowerCase()}
+            {siteConfig.zakladatel_jmeno}, {siteConfig.zakladatel_pozice?.toLowerCase()}
           </p>
         </div>
       </section>

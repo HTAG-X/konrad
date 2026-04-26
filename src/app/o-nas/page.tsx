@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import siteConfig from "@/data/siteConfig.json";
+import { getSiteConfig, getUsp, getReference } from "@/lib/supabase/queries";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "O nás | Konrad Home Build",
@@ -14,7 +16,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ONasPage() {
+export default async function ONasPage() {
+  const [siteConfig, usp, reference] = await Promise.all([
+    getSiteConfig(),
+    getUsp(),
+    getReference(),
+  ]);
+
   return (
     <div>
       {/* Hero */}
@@ -53,18 +61,18 @@ export default function ONasPage() {
                 Zakladatel
               </p>
               <h2 className="font-serif font-bold text-[#1A1A1A] mb-6 text-[clamp(1.8rem,4vw,2.5rem)]">
-                {siteConfig.zakladatel.jmeno}
+                {siteConfig.zakladatel_jmeno}
               </h2>
               <p className="text-[#3D3D3D] text-[1.05rem] leading-relaxed mb-8">
-                {siteConfig.zakladatel.pozice}. S firmou {siteConfig.nazevKratky} pomáhá rodinám na jižní Moravě realizovat sen o vlastním domě. Každý projekt je pro něj osobní. Staví domy, jako by je stavěl pro svou rodinu.
+                {siteConfig.zakladatel_pozice}. S firmou {siteConfig.nazev_kratky} pomáhá rodinám na jižní Moravě realizovat sen o vlastním domě. Každý projekt je pro něj osobní. Staví domy, jako by je stavěl pro svou rodinu.
               </p>
 
               <blockquote className="border-l-2 border-[#8B7340] pl-6 py-2">
                 <p className="font-serif italic text-[#1A1A1A] text-[1.3rem] leading-relaxed mb-3">
-                  &ldquo;{siteConfig.zakladatel.citat}&rdquo;
+                  &ldquo;{siteConfig.zakladatel_citat}&rdquo;
                 </p>
                 <p className="text-[#8A8A8A] text-[0.85rem] tracking-[0.1em] uppercase">
-                  {siteConfig.zakladatel.jmeno}
+                  {siteConfig.zakladatel_jmeno}
                 </p>
               </blockquote>
             </div>
@@ -83,7 +91,7 @@ export default function ONasPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
-            {siteConfig.usp.map((value, index) => (
+            {usp.map((value: any, index: number) => (
               <div key={value.titulek} className="bg-white border-t-2 border-[#8B7340] shadow-[0_2px_8px_rgba(0,0,0,0.06)] p-10 mb-8 lg:mb-0 group transition-all duration-500 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[rgba(139,115,64,0.04)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative z-10">
@@ -151,7 +159,7 @@ export default function ONasPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {siteConfig.reference.map((ref) => (
+            {reference.map((ref: any) => (
               <div key={ref.jmeno} className="bg-white p-10 border-t-2 border-[#8B7340] flex flex-col">
                 <div className="font-serif text-[3rem] text-[#8B7340] leading-none mb-4">&ldquo;</div>
                 <p className="text-[#3D3D3D] text-[0.95rem] leading-relaxed mb-6 italic flex-1">{ref.text}</p>

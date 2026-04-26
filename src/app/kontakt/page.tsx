@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import { ContactFormWrapper } from "@/components/ContactFormWrapper";
-import siteConfig from "@/data/siteConfig.json";
+import { getSiteConfig } from "@/lib/supabase/queries";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Kontaktujte nás | Konrad Home Build",
   description:
-    `Kontaktujte KONRAD HOME BUILD, s.r.o. Suchohrdly u Miroslavi. Moderní dřevostavby na klíč. Tel.: ${siteConfig.telefon}`,
+    "Kontaktujte KONRAD HOME BUILD, s.r.o. Suchohrdly u Miroslavi. Moderní dřevostavby na klíč.",
   keywords: "kontakt, Konrad Home Build, Suchohrdly u Miroslavi, Jižní Morava, dřevostavby",
   openGraph: {
     title: "Kontaktujte nás | Konrad Home Build",
@@ -16,7 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function KontaktPage() {
+export default async function KontaktPage() {
+  const siteConfig = await getSiteConfig();
+
   return (
     <div>
       {/* Hero */}
@@ -56,7 +60,7 @@ export default function KontaktPage() {
             {/* Company Info */}
             <div className="bg-[#F7F5F0] p-8 border-t-2 border-[#8B7340]">
               <h3 className="font-serif text-xl font-bold text-[#1A1A1A] mb-6">
-                {siteConfig.nazevFirmy}
+                {siteConfig.nazev_firmy}
               </h3>
 
               <div className="space-y-5">
@@ -140,8 +144,8 @@ export default function KontaktPage() {
               <div className="space-y-4">
                 <div>
                   <p className="text-white/60 text-sm mb-1">Jméno</p>
-                  <p className="text-lg font-semibold">{siteConfig.zakladatel.jmeno}</p>
-                  <p className="text-white/60 text-sm mt-1">{siteConfig.zakladatel.pozice}</p>
+                  <p className="text-lg font-semibold">{siteConfig.zakladatel_jmeno}</p>
+                  <p className="text-white/60 text-sm mt-1">{siteConfig.zakladatel_pozice}</p>
                 </div>
                 <a
                   href={`tel:${siteConfig.telefon}`}

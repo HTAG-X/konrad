@@ -10,7 +10,7 @@ interface ProjectGalleryProps {
   pudorys: string;
 }
 
-export function ProjectGallery({ nazev, hlavniFoto, fotogalerie, pudorys }: ProjectGalleryProps) {
+export function ProjectGallery({ nazev, hlavniFoto, fotogalerie = [], pudorys }: ProjectGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [showPudorys, setShowPudorys] = useState(false);
 
@@ -61,15 +61,6 @@ export function ProjectGallery({ nazev, hlavniFoto, fotogalerie, pudorys }: Proj
         </div>
       </div>
 
-      {/* Půdorys button */}
-      <div className="mt-4">
-        <button
-          onClick={() => setShowPudorys(true)}
-          className="text-[#8B7340] font-semibold text-[0.85rem] tracking-[0.05em] uppercase hover:text-[#B89B5E] transition-colors"
-        >
-          Zobrazit půdorys
-        </button>
-      </div>
 
       {/* Lightbox - galerie */}
       {lightboxIndex !== null && (
