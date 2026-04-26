@@ -45,6 +45,18 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://www.konradhomebuild.cz",
     siteName: "Konrad Home Build",
+    images: [
+      {
+        url: "https://www.konradhomebuild.cz/images/logo/konrad_wide.png",
+        width: 1200,
+        height: 400,
+        alt: "Konrad Home Build",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@konradhomebuild",
   },
 };
 

@@ -37,6 +37,7 @@ export async function generateMetadata(props: BlogDetailPageProps): Promise<Meta
       type: "article",
       url: `https://www.konradhomebuild.cz/aktuality/${post.slug}`,
       publishedTime: post.datum,
+      images: post.nahledovy_obrazek ? [{ url: post.nahledovy_obrazek, alt: post.titulek }] : undefined,
     },
     alternates: { canonical: `/aktuality/${post.slug}` },
   };

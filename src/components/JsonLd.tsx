@@ -21,6 +21,7 @@ interface PropertyJsonLdProps {
   addressPostalCode?: string;
   addressCountry?: string;
   floorSize: number;
+  image?: string;
 }
 
 interface BreadcrumbItem {
@@ -94,6 +95,7 @@ export function PropertyJsonLd({
   addressPostalCode = "691 68",
   addressCountry = "CZ",
   floorSize,
+  image,
 }: PropertyJsonLdProps) {
   const availabilityMap: { [key: string]: string } = {
     Volné: "https://schema.org/InStock",
@@ -107,7 +109,7 @@ export function PropertyJsonLd({
     name,
     description,
     url,
-    image: "",
+    image: image || "",
     address: {
       "@type": "PostalAddress",
       streetAddress: addressStreet,

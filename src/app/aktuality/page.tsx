@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Aktuality a novinky | Konrad Home Build",
   description:
     "Čtěte naše nejnovější články o moderních dřevostavbách, ekologickém stavitelství a designu rodinných domů.",
-  keywords: "aktuality, novinky, blog, dřevostavby, ekologické stavby, Jižní Morava",
+  keywords: "aktuality, novinky, blog, dřevostavby, ekologické stavby, rodinné domy",
   openGraph: {
     title: "Aktuality a novinky | Konrad Home Build",
     description: "Čtěte naše nejnovější články o moderních dřevostavbách a ekologickém stavitelství.",

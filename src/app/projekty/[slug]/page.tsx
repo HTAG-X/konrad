@@ -39,6 +39,7 @@ export async function generateMetadata(props: ProjektyDetailPageProps): Promise<
       description: projekt.popis,
       type: "website",
       url: `https://www.konradhomebuild.cz/projekty/${projekt.slug}`,
+      images: projekt.hlavni_foto ? [{ url: projekt.hlavni_foto, alt: projekt.nazev }] : undefined,
     },
     alternates: { canonical: `/projekty/${projekt.slug}` },
   };
@@ -75,6 +76,7 @@ export default async function ProjektyDetailPage(props: ProjektyDetailPageProps)
         addressPostalCode="671 72"
         addressCountry="CZ"
         floorSize={projekt.uzitna_plocha}
+        image={projekt.hlavni_foto}
       />
 
       {/* Breadcrumb */}

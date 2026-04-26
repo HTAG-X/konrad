@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "O nás | Konrad Home Build",
   description:
     "Poznejte příběh KONRAD HOME BUILD, s.r.o. Špičkoví specialisté na moderní dřevostavby na klíč na jižní Moravě.",
+  keywords: "o nás, Konrad Home Build, Lubomír Konrad, dřevostavby, jižní Morava, rodinné domy",
   openGraph: {
     title: "O nás | Konrad Home Build",
     description:

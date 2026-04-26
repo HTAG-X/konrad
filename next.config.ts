@@ -25,6 +25,48 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // Staré stránky z původního webu (Wix)
+      {
+        source: "/sluzby",
+        destination: "/drevostavby",
+        permanent: true,
+      },
+      {
+        source: "/book-online",
+        destination: "/kontakt",
+        permanent: true,
+      },
+      {
+        source: "/zasady-pouzivani-souboru-cookie",
+        destination: "/zasady-ochrany-osobnich-udaju",
+        permanent: true,
+      },
+      // Staré detaily domů (Wix product pages)
+      {
+        source: "/product-page/:slug*",
+        destination: "/projekty",
+        permanent: true,
+      },
+      // Wix store pages
+      {
+        source: "/store-products-sitemap.xml",
+        destination: "/sitemap.xml",
+        permanent: true,
+      },
+      {
+        source: "/store-categories-sitemap.xml",
+        destination: "/sitemap.xml",
+        permanent: true,
+      },
+      {
+        source: "/pages-sitemap.xml",
+        destination: "/sitemap.xml",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     formats: ["image/webp", "image/avif"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],

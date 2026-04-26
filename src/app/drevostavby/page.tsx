@@ -28,9 +28,31 @@ export const metadata: Metadata = {
   },
 };
 
+function FAQJsonLd({ items }: { items: { otazka: string; odpoved: string }[] }) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.otazka,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.odpoved,
+      },
+    })),
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
 export default function DrevostavbyPage() {
   return (
     <div>
+      <FAQJsonLd items={faqItems} />
       {/* Hero */}
       <section className="relative flex items-center justify-center overflow-hidden bg-[#1a1a1a] pt-40 pb-24 px-8">
         <img
