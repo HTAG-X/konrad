@@ -1,0 +1,4 @@
+- [Project overview](project_overview.md) — Konrad Home Build, dřevostavby, Next.js + Supabase + Vercel
+- [User preferences](user_preferences.md) — Design rozhodnutí, fonty, styl komunikace
+- [Supabase setup](supabase_setup.md) — DB tabulky, buckety, RLS, audit log
+- [SEO and redirects](seo_redirects.md) — Přesměrování z Wix, OG images, reCAPTCHA, FAQ schema

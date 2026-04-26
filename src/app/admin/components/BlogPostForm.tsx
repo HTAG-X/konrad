@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { logAction } from "@/lib/auditLog";
 import { ImageUploader } from "./ImageUploader";
-import { Copy, Eye, Trash2 } from "lucide-react";
+import { Copy, Eye, Trash2, Image as ImageIconLucide } from "lucide-react";
 import { RichTextEditor } from "./RichTextEditor";
+import { ImagePicker } from "./ImagePicker";
 
 interface BlogPostFormProps {
   initialData?: Record<string, any>;
@@ -52,6 +53,7 @@ export function BlogPostForm({ initialData }: BlogPostFormProps) {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
 
   const slug = isEdit
     ? initialData?.slug
@@ -307,18 +309,59 @@ export function BlogPostForm({ initialData }: BlogPostFormProps) {
             <h2 className="font-serif text-lg font-bold text-[#1A1A1A] mb-6">
               Náhledový obrázek
             </h2>
-            <ImageUploader
-              images={nahledovyObrazek}
-              onChange={(imgs) => {
-                setNahledovyObrazek(imgs);
-                setMainImage(imgs[0] || "");
-              }}
-              mainImage={mainImage}
-              onMainImageChange={setMainImage}
-              bucket="blog-images"
-              folder={isEdit ? initialData.slug : slugify(form.titulek) || "temp"}
-            />
+
+            {/* Preview */}
+            {nahledovyObrazek.length > 0 && nahledovyObrazek[0] ? (
+              <div className="mb-4 relative inline-block">
+                <img
+                  src={nahledovyObrazek[0]}
+                  alt="Náhled"
+                  className="max-h-48 border border-[rgba(139,115,64,0.15)]"
+                />
+                <button
+                  type="button"
+                  onClick={() => { setNahledovyObrazek([]); setMainImage(""); }}
+                  className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600"
+                >
+                  <Trash2 size={12} />
+                </button>
+              </div>
+            ) : null}
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowPicker(true)}
+                className="flex items-center gap-2 border border-[#8B7340] text-[#8B7340] px-4 py-2.5 text-sm font-semibold hover:bg-[#8B7340] hover:text-white transition-colors"
+              >
+                <ImageIconLucide size={16} />
+                Vybrat z knihovny
+              </button>
+              <ImageUploader
+                images={[]}
+                onChange={(imgs) => {
+                  if (imgs.length > 0) {
+                    setNahledovyObrazek([imgs[imgs.length - 1]]);
+                    setMainImage(imgs[imgs.length - 1]);
+                  }
+                }}
+                mainImage=""
+                onMainImageChange={() => {}}
+                bucket="blog-images"
+                folder={isEdit ? initialData.slug : slugify(form.titulek) || "temp"}
+              />
+            </div>
           </div>
+
+          {showPicker && (
+            <ImagePicker
+              onSelect={(url) => {
+                setNahledovyObrazek([url]);
+                setMainImage(url);
+              }}
+              onClose={() => setShowPicker(false)}
+            />
+          )}
 
           {/* Smazat */}
           {isEdit && (
