@@ -14,7 +14,9 @@ export const metadata: Metadata = {
     description:
       "Prohlédněte si naše aktuální developerské projekty - moderní dřevostavby v Jižní Moravě.",
     type: "website",
+    images: [{ url: "https://www.konradhomebuild.cz/images/logo/konrad_wide.png", width: 1200, height: 400, alt: "Konrad Home Build" }],
   },
+  alternates: { canonical: "/projekty" },
 };
 
 export default async function ProjektyPage() {

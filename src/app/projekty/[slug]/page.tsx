@@ -72,8 +72,8 @@ export default async function ProjektyDetailPage(props: ProjektyDetailPageProps)
         priceCurrency="CZK"
         availability={projekt.stav}
         addressStreet={projekt.lokalita}
-        addressCity="Suchohrdly u Miroslavi"
-        addressPostalCode="671 72"
+        addressCity={projekt.lokalita.split(",")[0]?.trim() || "Suchohrdly u Miroslavi"}
+        addressPostalCode=""
         addressCountry="CZ"
         floorSize={projekt.uzitna_plocha}
         image={projekt.hlavni_foto}

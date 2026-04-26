@@ -14,7 +14,9 @@ export const metadata: Metadata = {
     title: "Aktuality a novinky | Konrad Home Build",
     description: "Čtěte naše nejnovější články o moderních dřevostavbách a ekologickém stavitelství.",
     type: "website",
+    images: [{ url: "https://www.konradhomebuild.cz/images/logo/konrad_wide.png", width: 1200, height: 400, alt: "Konrad Home Build" }],
   },
+  alternates: { canonical: "/aktuality" },
 };
 
 function formatCzechDate(dateString: string): string {

@@ -14,7 +14,9 @@ export const metadata: Metadata = {
     description:
       "Špičkoví specialisté v oblasti stavebnictví se dřevem na jižní Moravě.",
     type: "website",
+    images: [{ url: "https://www.konradhomebuild.cz/images/logo/konrad_wide.png", width: 1200, height: 400, alt: "Konrad Home Build" }],
   },
+  alternates: { canonical: "/o-nas" },
 };
 
 export default async function ONasPage() {

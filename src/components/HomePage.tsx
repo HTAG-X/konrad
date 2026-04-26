@@ -101,15 +101,15 @@ export default function HomePage({ projekty, siteConfig, usp, reference }: HomeP
       <section className="bg-[#1A1A1A] py-16 px-8">
         <div className="max-w-[1200px] mx-auto grid grid-cols-2 lg:grid-cols-4 gap-10 text-center text-white">
           <div>
-            <div className="font-serif text-[3.5rem] font-bold text-[#B89B5E] leading-none mb-2">15+</div>
+            <div className="font-serif text-[3.5rem] font-bold text-[#B89B5E] leading-none mb-2">22</div>
             <p className="text-white/70 text-[0.85rem]">let zkušeností v oboru</p>
           </div>
           <div>
-            <div className="font-serif text-[3.5rem] font-bold text-[#B89B5E] leading-none mb-2">50+</div>
+            <div className="font-serif text-[3.5rem] font-bold text-[#B89B5E] leading-none mb-2">25+</div>
             <p className="text-white/70 text-[0.85rem]">dokončených rodinných domů</p>
           </div>
           <div>
-            <div className="font-serif text-[3.5rem] font-bold text-[#B89B5E] leading-none mb-2">50+</div>
+            <div className="font-serif text-[3.5rem] font-bold text-[#B89B5E] leading-none mb-2">25+</div>
             <p className="text-white/70 text-[0.85rem]">spokojených rodin</p>
           </div>
           <div>

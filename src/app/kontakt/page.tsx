@@ -15,7 +15,9 @@ export const metadata: Metadata = {
     title: "Kontaktujte nás | Konrad Home Build",
     description: "Kontaktujte nás pro více informací o našich službách.",
     type: "website",
+    images: [{ url: "https://www.konradhomebuild.cz/images/logo/konrad_wide.png", width: 1200, height: 400, alt: "Konrad Home Build" }],
   },
+  alternates: { canonical: "/kontakt" },
 };
 
 export default async function KontaktPage() {
