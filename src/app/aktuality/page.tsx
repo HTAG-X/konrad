@@ -52,8 +52,14 @@ export default async function AktualityPage() {
           {sortedPosts.map((post: any) => (
             <Link key={post.id} href={`/aktuality/${post.slug}`}>
               <article className="group bg-white border border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.08)] overflow-hidden transition-all duration-500 hover:border-[#8B7340] hover:-translate-y-2 hover:shadow-[0_12px_24px_rgba(0,0,0,0.12)] h-full flex flex-col">
-                {/* Image placeholder */}
-                <div className="h-[240px] bg-gradient-to-br from-[#8B7340] via-[#B89B5E] to-[#D4AE6A]" />
+                {/* Image */}
+                <div className="h-[240px] bg-[#F7F5F0] overflow-hidden">
+                  {post.nahledovy_obrazek ? (
+                    <img src={post.nahledovy_obrazek} alt={post.titulek} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-[#8B7340] via-[#B89B5E] to-[#D4AE6A]" />
+                  )}
+                </div>
 
                 {/* Content */}
                 <div className="p-8 flex-1 flex flex-col">

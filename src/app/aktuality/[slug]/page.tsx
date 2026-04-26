@@ -115,11 +115,13 @@ export default async function BlogDetailPage(props: BlogDetailPageProps) {
       </div>
 
       {/* Hero Image */}
-      <div className="max-w-[900px] mx-auto px-8 mb-12">
-        <div className="h-96 bg-gradient-to-br from-[#8B7340] via-[#B89B5E] to-[#D4AE6A] flex items-center justify-center text-white/50">
-          <Grid3X3 size={48} />
+      {post.nahledovy_obrazek && (
+        <div className="max-w-[900px] mx-auto px-8 mb-12">
+          <div className="h-96 bg-[#F7F5F0] overflow-hidden">
+            <img src={post.nahledovy_obrazek} alt={post.titulek} className="w-full h-full object-cover" />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Content */}
       <div className="max-w-[900px] mx-auto px-8 mb-16">
@@ -152,7 +154,13 @@ export default async function BlogDetailPage(props: BlogDetailPageProps) {
               {otherPosts.map((relatedPost: any) => (
                 <Link key={relatedPost.id} href={`/aktuality/${relatedPost.slug}`}>
                   <article className="group bg-white border border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.08)] overflow-hidden transition-all duration-500 hover:border-[#8B7340] hover:-translate-y-2 h-full flex flex-col">
-                    <div className="h-[200px] bg-gradient-to-br from-[#8B7340] via-[#B89B5E] to-[#D4AE6A]" />
+                    <div className="h-[200px] bg-[#F7F5F0] overflow-hidden">
+                      {relatedPost.nahledovy_obrazek ? (
+                        <img src={relatedPost.nahledovy_obrazek} alt={relatedPost.titulek} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#8B7340] via-[#B89B5E] to-[#D4AE6A]" />
+                      )}
+                    </div>
                     <div className="p-8 flex-1 flex flex-col">
                       <div className="flex items-center gap-2 text-[#8A8A8A] mb-3 text-[0.85rem]">
                         <Calendar size={16} />
