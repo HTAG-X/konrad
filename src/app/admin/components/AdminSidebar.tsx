@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Home, FileText, MessageSquareQuote, Settings } from "lucide-react";
+import { LayoutDashboard, Home, FileText, MessageSquareQuote, Settings, Inbox } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/poptavky", label: "Poptávky", icon: Inbox },
   { href: "/admin/projekty", label: "Projekty", icon: Home },
   { href: "/admin/blog", label: "Blog", icon: FileText },
   { href: "/admin/reference", label: "Reference", icon: MessageSquareQuote },

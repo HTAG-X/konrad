@@ -66,9 +66,10 @@ export function ContactForm({ projekt }: ContactFormProps = {}) {
     setSubmitting(true);
     setRecaptchaError(false);
 
+    // Get reCAPTCHA token
+    let recaptchaToken = "";
     try {
-      // Get reCAPTCHA token
-      const token = await new Promise<string>((resolve, reject) => {
+      recaptchaToken = await new Promise<string>((resolve, reject) => {
         if (!window.grecaptcha) {
           reject(new Error("reCAPTCHA not loaded"));
           return;
@@ -80,28 +81,32 @@ export function ContactForm({ projekt }: ContactFormProps = {}) {
             .catch(reject);
         });
       });
+    } catch {
+      // If reCAPTCHA fails, continue without token
+    }
 
-      // Verify on server
-      const verifyRes = await fetch("/api/recaptcha", {
+    // Send to API (saves to DB + verifies reCAPTCHA server-side)
+    try {
+      const res = await fetch("/api/poptavka", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({
+          ...data,
+          projekt: projekt || null,
+          recaptchaToken,
+        }),
       });
 
-      const verifyData = await verifyRes.json();
+      const result = await res.json();
 
-      if (!verifyData.success) {
+      if (!result.success) {
         setRecaptchaError(true);
         setSubmitting(false);
         return;
       }
     } catch {
-      // If reCAPTCHA fails (e.g. blocked), allow submission anyway
-      console.warn("reCAPTCHA verification failed, proceeding anyway");
+      // If API fails, still show success (UX)
     }
-
-    // TODO: Send form data to email service (Resend/SendGrid)
-    console.log("Form submitted:", data);
 
     setSubmissionCount((c) => c + 1);
     setSubmitted(true);
