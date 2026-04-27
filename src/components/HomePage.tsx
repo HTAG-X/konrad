@@ -65,7 +65,7 @@ export default function HomePage({ projekty, siteConfig, usp, reference }: HomeP
           </div>
 
           <h1 className="font-serif font-bold text-white mb-6 leading-[1.1] tracking-tight text-[clamp(3rem,8vw,6rem)]">
-            Dům Vašich Snů
+            Stavíme domy pro vaši budoucnost
           </h1>
 
           <p className="text-white mb-12 leading-relaxed max-w-[600px] mx-auto text-[clamp(1rem,1.8vw,1.15rem)]">
