@@ -172,8 +172,8 @@ export function BlogPostForm({ initialData }: BlogPostFormProps) {
         </div>
       )}
 
-      {/* Top bar */}
-      <div className="bg-white p-6 border border-[rgba(139,115,64,0.15)] mb-6 flex flex-wrap items-center justify-between gap-4">
+      {/* Top bar (sticky) */}
+      <div className="bg-white p-6 border border-[rgba(139,115,64,0.15)] mb-6 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40 shadow-sm">
         <div className="flex items-center gap-4">
           {/* Published toggle */}
           <label className="flex items-center gap-3 cursor-pointer">
