@@ -2,7 +2,8 @@
 
 import { useState, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Upload, X, GripVertical, Star } from "lucide-react";
+import { Upload, X, GripVertical, Star, Image as ImageIcon } from "lucide-react";
+import { ImagePicker } from "./ImagePicker";
 
 interface ImageUploaderProps {
   images: string[];
@@ -22,20 +23,27 @@ export function ImageUploader({
   folder,
 }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
 
   const uploadFiles = useCallback(
     async (files: FileList | File[]) => {
       setUploading(true);
+      setUploadError(null);
       const newUrls: string[] = [];
+      const errors: string[] = [];
 
       for (const file of Array.from(files)) {
-        if (!file.type.startsWith("image/")) continue;
+        if (!file.type.startsWith("image/")) {
+          errors.push(`${file.name}: Nepodporovaný formát souboru`);
+          continue;
+        }
         if (file.size > 10 * 1024 * 1024) {
-          alert(`Soubor ${file.name} je příliš velký (max 10 MB)`);
+          errors.push(`${file.name}: Příliš velký (max 10 MB)`);
           continue;
         }
 
@@ -49,6 +57,7 @@ export function ImageUploader({
 
         if (error) {
           console.error("Upload error:", error.message);
+          errors.push(`${file.name}: ${error.message}`);
           continue;
         }
 
@@ -65,6 +74,10 @@ export function ImageUploader({
         if (!mainImage && newUrls[0]) {
           onMainImageChange(newUrls[0]);
         }
+      }
+
+      if (errors.length > 0) {
+        setUploadError(errors.join("\n"));
       }
 
       setUploading(false);
@@ -122,35 +135,64 @@ export function ImageUploader({
 
   return (
     <div>
-      {/* Drop zone */}
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed p-8 text-center cursor-pointer transition-colors mb-4 ${
-          dragOver
-            ? "border-[#8B7340] bg-[#8B7340]/5"
-            : "border-[rgba(139,115,64,0.3)] hover:border-[#8B7340]"
-        }`}
-      >
-        <Upload className="mx-auto mb-3 text-[#8A8A8A]" size={32} />
-        {uploading ? (
-          <p className="text-[#8B7340] font-semibold">Nahrávám...</p>
-        ) : (
-          <>
-            <p className="text-[#3D3D3D] font-medium">
-              Přetáhněte fotky sem nebo klikněte pro výběr
-            </p>
-            <p className="text-[#8A8A8A] text-sm mt-1">
-              JPG, PNG, WebP. Max 10 MB na soubor.
-            </p>
-          </>
-        )}
+      {/* Drop zone + library button */}
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 mb-4">
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
+          className={`border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
+            dragOver
+              ? "border-[#8B7340] bg-[#8B7340]/5"
+              : "border-[rgba(139,115,64,0.3)] hover:border-[#8B7340]"
+          }`}
+        >
+          <Upload className="mx-auto mb-3 text-[#8A8A8A]" size={32} />
+          {uploading ? (
+            <p className="text-[#8B7340] font-semibold">Nahrávám...</p>
+          ) : (
+            <>
+              <p className="text-[#3D3D3D] font-medium">
+                Přetáhněte fotky sem nebo klikněte pro výběr
+              </p>
+              <p className="text-[#8A8A8A] text-sm mt-1">
+                JPG, PNG, WebP. Max 10 MB na soubor.
+              </p>
+            </>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowPicker(true)}
+          className="border-2 border-[rgba(139,115,64,0.3)] hover:border-[#8B7340] px-6 py-4 text-center transition-colors flex flex-col items-center justify-center gap-2 min-w-[140px]"
+        >
+          <ImageIcon size={28} className="text-[#8B7340]" />
+          <span className="text-sm font-semibold text-[#3D3D3D]">
+            Vybrat z knihovny
+          </span>
+        </button>
       </div>
+
+      {/* Image picker modal */}
+      {showPicker && (
+        <ImagePicker
+          onSelect={(url) => {
+            if (!images.includes(url)) {
+              const updated = [...images, url];
+              onChange(updated);
+              if (!mainImage) {
+                onMainImageChange(url);
+              }
+            }
+            setShowPicker(false);
+          }}
+          onClose={() => setShowPicker(false)}
+        />
+      )}
 
       <input
         ref={fileInputRef}
@@ -163,6 +205,27 @@ export function ImageUploader({
           e.target.value = "";
         }}
       />
+
+      {/* Error message */}
+      {uploadError && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 text-sm">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="font-semibold mb-1">Chyba při nahrávání:</p>
+              {uploadError.split("\n").map((err, i) => (
+                <p key={i}>{err}</p>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setUploadError(null)}
+              className="text-red-400 hover:text-red-600 shrink-0"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Image grid */}
       {images.length > 0 && (
