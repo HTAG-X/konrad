@@ -33,8 +33,9 @@ Prezentační web s integrovaným katalogem nemovitostí pro firmu **KONRAD HOME
 - **Next.js 16** (App Router, TypeScript)
 - **Tailwind CSS 4**
 - **React 19**, lucide-react ikony, react-hook-form
-- Data v JSON souborech (`src/data/`) — žádná databáze, žádný CMS
-- Statický export (SSG) — deploy na Vercel
+- **Supabase** — databáze (PostgreSQL), autentizace, storage pro obrázky
+- **TipTap** — WYSIWYG editor v admin panelu
+- Deploy na Vercel
 
 ## Spuštění
 
@@ -42,6 +43,14 @@ Prezentační web s integrovaným katalogem nemovitostí pro firmu **KONRAD HOME
 npm install
 npm run dev      # localhost:3000
 npm run build    # produkční build
+```
+
+### Setup skripty
+
+```bash
+npx tsx scripts/seed.ts              # Migrace dat z JSON do Supabase DB
+npx tsx scripts/setup-storage.ts     # Vytvoření storage bucketů (vyžaduje SUPABASE_SERVICE_ROLE_KEY)
+node scripts/setup-policies.mjs      # Vytvoření RLS politik pro storage (vyžaduje pg + DIRECT_URL)
 ```
 
 ## Struktura projektu
@@ -72,13 +81,55 @@ src/
 │   ├── StatusBadge.tsx     # Barevný štítek stavu (Volné/Rezervace/Prodáno)
 │   ├── PriceFormat.tsx     # Formátování ceny (8500000 → 8 500 000 Kč)
 │   └── JsonLd.tsx          # SEO strukturovaná data (Organization, Property, Breadcrumb, Article)
-├── data/                   # EDITOVATELNÁ DATA (klient mění zde)
+├── app/admin/              # ADMIN PANEL (chráněný autentizací)
+│   ├── login/page.tsx      # Přihlašovací stránka
+│   ├── page.tsx            # Dashboard
+│   ├── projekty/           # CRUD projektů
+│   ├── blog/               # CRUD článků
+│   └── components/
+│       ├── PropertyForm.tsx   # Formulář projektu (sticky top bar s Uložit)
+│       ├── BlogPostForm.tsx   # Formulář článku (sticky top bar s Uložit)
+│       ├── ImageUploader.tsx  # Upload fotek (drag&drop + výběr z knihovny)
+│       ├── ImagePicker.tsx    # Modální výběr z nahraných obrázků
+│       └── RichTextEditor.tsx # WYSIWYG editor (TipTap)
+├── data/                   # EDITOVATELNÁ DATA (fallback, primárně v Supabase DB)
 │   ├── projekty.json       # Seznam nemovitostí (6 domů)
 │   ├── blogPosts.json      # Články blogu (3 články)
 │   └── siteConfig.json     # Kontakty firmy, IČO, DIČ, sociální sítě
 └── lib/
-    └── utils.ts            # formatPrice(), formatDate()
+    ├── utils.ts            # formatPrice(), formatDate()
+    ├── auditLog.ts         # Logování akcí v admin panelu
+    └── supabase/
+        ├── client.ts       # Browser client (createBrowserClient)
+        └── server.ts       # Server client (createServerClient)
 ```
+
+## Supabase
+
+### Proměnné prostředí (`.env.local`)
+- `NEXT_PUBLIC_SUPABASE_URL` — URL Supabase projektu
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — Publishable key (veřejný, pro browser client)
+- `SUPABASE_SERVICE_ROLE_KEY` — Service role key (tajný, pro admin skripty)
+- `DATABASE_URL` — PostgreSQL connection string (pooling, pro app)
+- `DIRECT_URL` — PostgreSQL connection string (direct, pro migrace)
+
+### Storage buckety
+- **`projekty-images`** — Fotky projektů a půdorysy (public bucket)
+- **`blog-images`** — Náhledové obrázky článků (public bucket)
+- Složková struktura: `{slug}/{timestamp}-{random}.{ext}`
+- Max velikost souboru: 10 MB
+- Povolené formáty: JPG, PNG, WebP, GIF
+
+### RLS politiky na `storage.objects`
+- `storage_public_read` — SELECT pro všechny (veřejné čtení fotek)
+- `storage_auth_insert` — INSERT pro authenticated (upload)
+- `storage_auth_update` — UPDATE pro authenticated
+- `storage_auth_delete` — DELETE pro authenticated
+
+### Admin autentizace
+- Middleware (`src/middleware.ts`) chrání `/admin/*` routes
+- Nepřihlášení uživatelé jsou přesměrováni na `/admin/login`
+- Supabase Auth přes SSR cookies
 
 ## Datový model nemovitostí (`projekty.json`)
 
@@ -165,7 +216,7 @@ Každý dům má:
 
 - Používej `"use client"` jen tam, kde je to nutné (useState, useEffect, onClick)
 - Serverové komponenty pro stránky, kde je to možné
-- Data importuj přímo z `src/data/*.json`
+- Data primárně z Supabase DB, JSON soubory jako fallback/seed
 - Veškeré texty v češtině, ceny v Kč
 - Nové stránky přidávej do `sitemap.ts`
 - Commit messages v češtině
@@ -184,11 +235,13 @@ Každý dům má:
 - Budování důvěry: osobní brand majitele, transparentnost, kvalitní materiály (PAVATEX)
 
 ### Požadavky na CMS/správu
-Klient musí být schopen spravovat web samostatně bez programování:
-- Přidávání/editace nemovitostí přes JSON formulářová pole
-- Změna statusu domu na jedno kliknutí (Aktivní → Rezervace → Prodáno)
-- Automatické formátování cen (z 13500000 na 13 500 000 Kč)
-- Blogový modul pro psaní aktualit
+Klient spravuje web přes admin panel (`/admin`):
+- Přidávání/editace nemovitostí přes formulář s WYSIWYG editorem ✅
+- Změna statusu domu na jedno kliknutí (Volné → Rezervace → Zamluveno → Prodáno) ✅
+- Automatické formátování cen (z 13500000 na 13 500 000 Kč) ✅
+- Blogový modul pro psaní aktualit ✅
+- Upload fotek drag&drop + výběr z knihovny nahraných obrázků ✅
+- Sticky panel s tlačítkem Uložit (viditelný při scrollování) ✅
 - SEO: editovatelné meta titulky a popisky u všech stránek
 
 ### Vizuální styl
